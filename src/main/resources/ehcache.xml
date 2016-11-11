@@ -37,5 +37,37 @@
            timeToLiveSeconds="3600">
     </cache>
     
+    <cache name="org.recap.domain.InstitutionEntity"
+        timeToLiveSeconds="3600">
+    </cache>
+
+    <cache name="org.recap.domain.ItemEntity"
+        timeToLiveSeconds="3600">
+    </cache>
+
+    <cache name="org.recap.domain.ItemEntity.holdingsEntities"
+        timeToLiveSeconds="3600">
+    </cache>
+
+    <cache name="org.recap.domain.HoldingsEntity"
+        timeToLiveSeconds="3600">
+    </cache>
+
+    <cache name="org.recap.domain.HoldingsEntity.bibliographicEntities"
+        timeToLiveSeconds="3600">
+    </cache>
+
+    <cache name="org.recap.domain.HoldingsEntity.itemEntities"
+        timeToLiveSeconds="3600">
+    </cache>
+
+    <cache name="org.recap.domain.BibliographicEntity"
+        timeToLiveSeconds="3600">
+    </cache>
+
+    <cache name="org.recap.domain.BibliographicEntity.holdingsEntities"
+        timeToLiveSeconds="3600">
+    </cache>
+
     <!-- jhipster-needle-ehcache-add-entry -->
 </ehcache>

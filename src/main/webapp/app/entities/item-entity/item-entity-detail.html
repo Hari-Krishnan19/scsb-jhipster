@@ -1,0 +1,83 @@
+
+<div>
+    <h2><span>Item Entity</span> {{vm.itemEntity.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span>Item Id</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.itemId}}</span>
+        </dd>
+        <dt><span>Barcode</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.barcode}}</span>
+        </dd>
+        <dt><span>Customer Code</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.customerCode}}</span>
+        </dd>
+        <dt><span>Call Number</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.callNumber}}</span>
+        </dd>
+        <dt><span>Call Number Type</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.callNumberType}}</span>
+        </dd>
+        <dt><span>Item Availability Status Id</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.itemAvailabilityStatusId}}</span>
+        </dd>
+        <dt><span>Copy Number</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.copyNumber}}</span>
+        </dd>
+        <dt><span>Owning Institution Id</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.owningInstitutionId}}</span>
+        </dd>
+        <dt><span>Collection Group Id</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.collectionGroupId}}</span>
+        </dd>
+        <dt><span>Created Date</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.createdDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span>Created By</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.createdBy}}</span>
+        </dd>
+        <dt><span>Last Updated Date</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.lastUpdatedDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span>Last Updated By</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.lastUpdatedBy}}</span>
+        </dd>
+        <dt><span>Use Restrictions</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.useRestrictions}}</span>
+        </dd>
+        <dt><span>Volume Part Year</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.volumePartYear}}</span>
+        </dd>
+        <dt><span>Owning Institution Item Id</span></dt>
+        <dd>
+            <span>{{vm.itemEntity.owningInstitutionItemId}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button" ui-sref="item-entity-detail.edit({id:vm.itemEntity.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm"> Edit</span>
+    </button>
+</div>

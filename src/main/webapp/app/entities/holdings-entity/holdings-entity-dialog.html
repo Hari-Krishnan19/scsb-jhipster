@@ -1,0 +1,123 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myHoldingsEntityLabel">Create or edit a Holdings Entity</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.holdingsEntity.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.holdingsEntity.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_holdingsId">Holdings Id</label>
+            <input type="number" class="form-control" name="holdingsId" id="field_holdingsId"
+                    ng-model="vm.holdingsEntity.holdingsId"
+                    required />
+            <div ng-show="editForm.holdingsId.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.holdingsId.$error.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.holdingsId.$error.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_content">Content</label>
+                <textarea class="form-control" name="content" id="field_content"
+                    ng-model="vm.holdingsEntity.content"  ></textarea>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_createdDate">Created Date</label>
+                <div class="input-group">
+                    <input id="field_createdDate" type="text" class="form-control" name="createdDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.holdingsEntity.createdDate" is-open="vm.datePickerOpenStatus.createdDate"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('createdDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_lastUpdatedDate">Last Updated Date</label>
+                <div class="input-group">
+                    <input id="field_lastUpdatedDate" type="text" class="form-control" name="lastUpdatedDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.holdingsEntity.lastUpdatedDate" is-open="vm.datePickerOpenStatus.lastUpdatedDate"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('lastUpdatedDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_lastUpdatedBy">Last Updated By</label>
+            <input type="text" class="form-control" name="lastUpdatedBy" id="field_lastUpdatedBy"
+                    ng-model="vm.holdingsEntity.lastUpdatedBy"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_owningInstitutionId">Owning Institution Id</label>
+            <input type="number" class="form-control" name="owningInstitutionId" id="field_owningInstitutionId"
+                    ng-model="vm.holdingsEntity.owningInstitutionId"
+                    required />
+            <div ng-show="editForm.owningInstitutionId.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.owningInstitutionId.$error.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.owningInstitutionId.$error.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_owningInstitutionHoldingsId">Owning Institution Holdings Id</label>
+            <input type="text" class="form-control" name="owningInstitutionHoldingsId" id="field_owningInstitutionHoldingsId"
+                    ng-model="vm.holdingsEntity.owningInstitutionHoldingsId"
+                    required />
+            <div ng-show="editForm.owningInstitutionHoldingsId.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.owningInstitutionHoldingsId.$error.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_isDeleted">Is Deleted</label>
+            <input type="checkbox" class="form-control" name="isDeleted" id="field_isDeleted"
+                    ng-model="vm.holdingsEntity.isDeleted"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_createdBy">Created By</label>
+            <input type="text" class="form-control" name="createdBy" id="field_createdBy"
+                    ng-model="vm.holdingsEntity.createdBy"
+                     />
+        </div>
+
+        <div class="form-group">
+            <label for="field_itemEntity">Item Entity</label>
+            <select class="form-control" id="field_itemEntity" multiple name="itemEntity" ng-model="vm.holdingsEntity.itemEntities" ng-options="itemEntity as itemEntity.id for itemEntity in vm.itementities track by itemEntity.id"></select>
+        </div>
+        <div class="form-group">
+            <label for="field_institutionEntity">Institution Entity</label>
+            <select class="form-control" id="field_institutionEntity" name="institutionEntity" ng-model="vm.holdingsEntity.institutionEntity" ng-options="institutionEntity as institutionEntity.id for institutionEntity in vm.institutionentities track by institutionEntity.id">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

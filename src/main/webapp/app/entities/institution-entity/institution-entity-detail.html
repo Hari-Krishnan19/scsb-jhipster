@@ -1,0 +1,31 @@
+
+<div>
+    <h2><span>Institution Entity</span> {{vm.institutionEntity.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span>Institution Id</span></dt>
+        <dd>
+            <span>{{vm.institutionEntity.institutionId}}</span>
+        </dd>
+        <dt><span>Institution Code</span></dt>
+        <dd>
+            <span>{{vm.institutionEntity.institutionCode}}</span>
+        </dd>
+        <dt><span>Institution Name</span></dt>
+        <dd>
+            <span>{{vm.institutionEntity.institutionName}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button" ui-sref="institution-entity-detail.edit({id:vm.institutionEntity.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm"> Edit</span>
+    </button>
+</div>

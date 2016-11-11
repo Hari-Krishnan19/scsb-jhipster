@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity BibliographicEntity.
+    -->
+    <changeSet id="20161111043041-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="bibliographic_entities_id"
+                                 baseTableName="bibliographic_entity_holdings_entity"
+                                 constraintName="bibliographic_entity_holdings_e_bibliographic_entities_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="bibliographic_t"/>
+        <addForeignKeyConstraint baseColumnNames="holdings_entities_id"
+                                 baseTableName="bibliographic_entity_holdings_entity"
+                                 constraintName="fk_bibliographic_entity_holdings_entity_holdings_entities_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="holdings_t"/>
+        
+    </changeSet>
+</databaseChangeLog>

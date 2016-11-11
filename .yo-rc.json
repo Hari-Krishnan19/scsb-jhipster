@@ -22,6 +22,7 @@
       "cucumber"
     ],
     "jhiPrefix": "jhi",
-    "enableTranslation": false
+    "enableTranslation": false,
+    "serviceDiscoveryType": false
   }
 }

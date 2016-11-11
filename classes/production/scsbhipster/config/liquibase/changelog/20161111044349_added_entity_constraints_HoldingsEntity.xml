@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity HoldingsEntity.
+    -->
+    <changeSet id="20161111044349-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="holdings_entities_id"
+                                 baseTableName="holdings_entity_item_entity"
+                                 constraintName="fk_holdings_entity_item_entity_holdings_entities_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="holdings_t"/>
+        <addForeignKeyConstraint baseColumnNames="item_entities_id"
+                                 baseTableName="holdings_entity_item_entity"
+                                 constraintName="fk_holdings_entity_item_entity_item_entities_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="item_t"/>
+        
+    </changeSet>
+</databaseChangeLog>

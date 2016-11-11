@@ -1,0 +1,65 @@
+
+<div>
+    <h2><span>Holdings Entity</span> {{vm.holdingsEntity.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span>Holdings Id</span></dt>
+        <dd>
+            <span>{{vm.holdingsEntity.holdingsId}}</span>
+        </dd>
+        <dt><span>Content</span></dt>
+        <dd>
+            <span>{{vm.holdingsEntity.content}}</span>
+        </dd>
+        <dt><span>Created Date</span></dt>
+        <dd>
+            <span>{{vm.holdingsEntity.createdDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span>Last Updated Date</span></dt>
+        <dd>
+            <span>{{vm.holdingsEntity.lastUpdatedDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span>Last Updated By</span></dt>
+        <dd>
+            <span>{{vm.holdingsEntity.lastUpdatedBy}}</span>
+        </dd>
+        <dt><span>Owning Institution Id</span></dt>
+        <dd>
+            <span>{{vm.holdingsEntity.owningInstitutionId}}</span>
+        </dd>
+        <dt><span>Owning Institution Holdings Id</span></dt>
+        <dd>
+            <span>{{vm.holdingsEntity.owningInstitutionHoldingsId}}</span>
+        </dd>
+        <dt><span>Is Deleted</span></dt>
+        <dd>
+            <span>{{vm.holdingsEntity.isDeleted}}</span>
+        </dd>
+        <dt><span>Created By</span></dt>
+        <dd>
+            <span>{{vm.holdingsEntity.createdBy}}</span>
+        </dd>
+        <dt><span>Item Entity</span></dt>
+        <dd>
+            <span ng-repeat="itemEntity in vm.holdingsEntity.itemEntities">
+                <a ui-sref="item-entity-detail({id: itemEntity.id})">{{itemEntity.id}}</a>{{$last ? '' : ', '}}
+            </span>
+        </dd>
+        <dt><span>Institution Entity</span></dt>
+        <dd>
+            <a ui-sref="institution-entity-detail({id:vm.holdingsEntity.institutionEntity.id})">{{vm.holdingsEntity.institutionEntity.id}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button" ui-sref="holdings-entity-detail.edit({id:vm.holdingsEntity.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm"> Edit</span>
+    </button>
+</div>

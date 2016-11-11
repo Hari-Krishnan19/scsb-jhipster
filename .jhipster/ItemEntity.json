@@ -1,0 +1,95 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "holdingsEntity",
+            "otherEntityName": "holdingsEntity",
+            "relationshipType": "many-to-many",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "itemEntity"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "itemId",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "barcode",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "customerCode",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "callNumber",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "callNumberType",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "itemAvailabilityStatusId",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "copyNumber",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "owningInstitutionId",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "collectionGroupId",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "createdDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "createdBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "lastUpdatedDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "lastUpdatedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "useRestrictions",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "volumePartYear",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "owningInstitutionItemId",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20161111051728",
+    "dto": "no",
+    "service": "serviceImpl",
+    "entityTableName": "item_t",
+    "pagination": "pager"
+}

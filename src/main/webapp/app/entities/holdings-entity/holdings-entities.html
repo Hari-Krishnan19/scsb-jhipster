@@ -1,0 +1,97 @@
+<div>
+    <h2>Holdings Entities</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="holdings-entity.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs" >
+                        Create new Holdings Entity
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="Query">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span>ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="holdingsId"><span>Holdings Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="content"><span>Content</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createdDate"><span>Created Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="lastUpdatedDate"><span>Last Updated Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="lastUpdatedBy"><span>Last Updated By</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="owningInstitutionId"><span>Owning Institution Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="owningInstitutionHoldingsId"><span>Owning Institution Holdings Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="isDeleted"><span>Is Deleted</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createdBy"><span>Created By</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="institutionEntity.id"><span>Institution Entity</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="holdingsEntity in vm.holdingsEntities track by holdingsEntity.id">
+                    <td><a ui-sref="holdings-entity-detail({id:holdingsEntity.id})">{{holdingsEntity.id}}</a></td>
+                    <td>{{holdingsEntity.holdingsId}}</td>
+                    <td>{{holdingsEntity.content}}</td>
+                        <td>{{holdingsEntity.createdDate | date:'mediumDate'}}</td>
+                        <td>{{holdingsEntity.lastUpdatedDate | date:'mediumDate'}}</td>
+                    <td>{{holdingsEntity.lastUpdatedBy}}</td>
+                    <td>{{holdingsEntity.owningInstitutionId}}</td>
+                    <td>{{holdingsEntity.owningInstitutionHoldingsId}}</td>
+                    <td>{{holdingsEntity.isDeleted}}</td>
+                    <td>{{holdingsEntity.createdBy}}</td>
+                    <td>
+                        <a ui-sref="institution-entity-detail({id:holdingsEntity.institutionEntity.id})">{{holdingsEntity.institutionEntity.id}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="holdings-entity-detail({id:holdingsEntity.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="holdings-entity.edit({id:holdingsEntity.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="holdings-entity.delete({id:holdingsEntity.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>
