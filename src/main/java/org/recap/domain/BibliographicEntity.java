@@ -146,14 +146,7 @@ public class BibliographicEntity implements Serializable {
     }
 
     public BibliographicEntity lastUpdatedDate(LocalDate lastUpdatedDate) {
-        this.lastUpdatedDate = lastUpdatedDate;/* @Test
-    public void checkSaveForInstitution() throws Exception{
-        InstitutionEntity institutionEntity = new InstitutionEntity();
-        institutionEntity.setInstitutionId(1);
-        institutionEntity.setInstitutionCode("PUL");
-        institutionEntity.setInstitutionName("PrincetonUniversityLibrary");
-        institutionEntityRepository.save(institutionEntity);
-    }*/
+        this.lastUpdatedDate = lastUpdatedDate;
         return this;
     }
 
