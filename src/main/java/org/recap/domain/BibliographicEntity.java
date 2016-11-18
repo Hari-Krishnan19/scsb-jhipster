@@ -58,7 +58,7 @@ public class BibliographicEntity implements Serializable {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "bibliographic_entity_holdings_entity",
                joinColumns = @JoinColumn(name="bibliographic_entities_id", referencedColumnName="ID"),
@@ -146,7 +146,14 @@ public class BibliographicEntity implements Serializable {
     }
 
     public BibliographicEntity lastUpdatedDate(LocalDate lastUpdatedDate) {
-        this.lastUpdatedDate = lastUpdatedDate;
+        this.lastUpdatedDate = lastUpdatedDate;/* @Test
+    public void checkSaveForInstitution() throws Exception{
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        institutionEntity.setInstitutionId(1);
+        institutionEntity.setInstitutionCode("PUL");
+        institutionEntity.setInstitutionName("PrincetonUniversityLibrary");
+        institutionEntityRepository.save(institutionEntity);
+    }*/
         return this;
     }
 

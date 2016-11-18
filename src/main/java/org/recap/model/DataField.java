@@ -45,4 +45,11 @@ public class DataField {
         this.tag = tag;
     }
 
+    public List<SubField> getSubFieldList() {
+        return subFieldList;
+    }
+
+    public void setSubFieldList(List<SubField> subFieldList) {
+        this.subFieldList = subFieldList;
+    }
 }

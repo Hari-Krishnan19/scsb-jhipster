@@ -11,7 +11,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Holdings {
 
-    @XmlElement
+    @XmlElement(name="holding")
     private List<Holding> holdingList;
 
     public List<Holding> getHoldingList() {

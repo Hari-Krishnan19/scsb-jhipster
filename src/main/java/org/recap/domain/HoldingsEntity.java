@@ -64,7 +64,7 @@ public class HoldingsEntity implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<BibliographicEntity> bibliographicEntities = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "holdings_entity_item_entity",
                joinColumns = @JoinColumn(name="holdings_entities_id", referencedColumnName="ID"),
