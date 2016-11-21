@@ -62,137 +62,26 @@ public class PersistingFromXMLToDBTest {
     }
 
     @Test
-    public void checkWithStaxStreamReaderAndJaxb() throws Exception{
-        File file = new File("/home/likewise-open/HTCINDIA/harikrishnanv/Documents/50kPUL.xml");
-        JAXBContext jaxbContext = JAXBContext.newInstance(BibRecords.class);
-        //Stax
-        XMLInputFactory xif = XMLInputFactory.newFactory();
-        StreamSource xml = new StreamSource(file);
-        XMLStreamReader xsr = xif.createXMLStreamReader(xml);
-        xsr.nextTag();
-        while(!xsr.getLocalName().equals("bibRecords")) {
-            xsr.nextTag();
-        }
-
-        JAXBContext jc = JAXBContext.newInstance(BibRecords.class);
-        Unmarshaller unmarshaller = jc.createUnmarshaller();
-        JAXBElement<BibRecords> jb = unmarshaller.unmarshal(xsr, BibRecords.class);
-
-
-        BibRecords bibRecords = jb.getValue();
-        List<BibRecord> bibRecordList = bibRecords.getBibRecords();
-        Random random = new Random();
-
-
-        List<BibliographicEntity> bibliographicEntities = new ArrayList<>();
-        for (BibRecord bibRecord : bibRecordList) {
-
-            //For bibliographic_t
-
-            LocalDate localDateTime = LocalDate.now();
-            BibliographicEntity bibliographicEntity = new BibliographicEntity();
-            InstitutionEntity institutionEntity;
-            institutionEntity = institutionEntityRepository.findByInstitutionCode(bibRecord.getBib().getOwningInstitutionId().getDescription());
-            String owningInstitutionBibId = String.valueOf(random.nextInt());
-            bibliographicEntity.setOwningInstitutionBibId(owningInstitutionBibId);
-            bibliographicEntity.setBibliographicId(random.nextInt());
-            bibliographicEntity.setOwningInstitutionId(institutionEntity.getInstitutionId());
-            Marshaller marshaller = jaxbContext.createMarshaller();
-            OutputStream os = new ByteArrayOutputStream();
-            marshaller.marshal(bibRecord.getBib().getContent().getCollection(), os);
-            bibliographicEntity.setContent(os.toString());
-            bibliographicEntity.setLastUpdatedDate(localDateTime);
-            bibliographicEntity.setLastUpdatedBy("Admin");
-            bibliographicEntity.setCreatedDate(localDateTime);
-            bibliographicEntity.setCreatedBy("Admin");
-
-
-            //for holdings
-            List<Holdings> holdingsList = bibRecord.getHoldings();
-            Set<HoldingsEntity> holdingsEntities = new HashSet<>();
-            for (Holdings holdings : holdingsList) {
-                List<Holding> holdingList = holdings.getHoldingList();
-                for (Holding holding : holdingList) {
-                    HoldingsEntity holdingsEntity = new HoldingsEntity();
-                    holdingsEntity.setOwningInstitutionHoldingsId(holding.getOwningInstitutionHoldingsId());
-                    OutputStream osForHoldingsContent = new ByteArrayOutputStream();
-                    marshaller.marshal(holding.getHoldingContent().getCollection(), osForHoldingsContent);
-                    holdingsEntity.setContent(osForHoldingsContent.toString());
-                    holdingsEntity.setHoldingsId(random.nextInt());
-                    holdingsEntity.setOwningInstitutionId(institutionEntity.getInstitutionId());
-                    holdingsEntity.setCreatedDate(localDateTime);
-                    holdingsEntity.setCreatedBy("admin");
-                    holdingsEntity.setLastUpdatedDate(localDateTime);
-                    holdingsEntity.setLastUpdatedBy("admin");
-                    holdingsEntities.add(holdingsEntity);
-
-                    //for items
-                    List<Items> itemsList = holding.getItemsList();
-                    Set<ItemEntity> itemEntities = new HashSet<>();
-                    for (Items items : itemsList) {
-                        List<Record> recordList = items.getContent().getCollection().getRecordList();
-                        for (Record record : recordList) {
-                            ItemEntity itemEntity = new ItemEntity();
-                            itemEntity.setOwningInstitutionId(institutionEntity.getInstitutionId());
-                            itemEntity.setOwningInstitutionItemId(String.valueOf(random.nextInt()));
-                            itemEntity.setCreatedDate(localDateTime);
-                            itemEntity.setCreatedBy("admin");
-                            itemEntity.setLastUpdatedDate(localDateTime);
-                            itemEntity.setLastUpdatedBy("admin");
-                            for (DataField dataField : record.getDatafield()) {
-                                Integer tag = dataField.getTag();
-                                for (SubField subField : dataField.getSubFieldList()) {
-                                    String code = subField.getCode();
-                                    if ((tag == 876) && (code.equalsIgnoreCase("a"))) {
-                                        itemEntity.setItemId(Integer.valueOf(subField.getDescription()));
-                                    }
-                                    if ((tag == 876) && (code.equalsIgnoreCase("h"))) {
-                                        itemEntity.setUseRestrictions(subField.getDescription());
-                                    }
-                                    if ((tag == 876) && (code.equalsIgnoreCase("j"))) {
-                                        if ((subField.getDescription().equalsIgnoreCase("Available"))) {
-                                            itemEntity.setItemAvailabilityStatusId(01);
-                                        } else  {
-                                            itemEntity.setItemAvailabilityStatusId(02);
-                                        }
-                                    }
-                                    if ((tag == 876) && (code.equalsIgnoreCase("p"))) {
-                                        itemEntity.setBarcode(subField.getDescription());
-                                    }
-                                    if ((tag == 876) && (code.equalsIgnoreCase("t"))) {
-                                        itemEntity.setCopyNumber(Integer.valueOf(subField.getDescription()));
-                                    }
-                                    if ((tag == 876) && (code.equalsIgnoreCase("3"))) {
-                                        itemEntity.setVolumePartYear(subField.getDescription());
-                                    }
-                                    if ((tag == 900) && (code.equalsIgnoreCase("a"))) {
-                                        if (subField.getDescription().equalsIgnoreCase("open")) {
-                                            itemEntity.setCollectionGroupId(01);
-                                        } else if (subField.getDescription().equalsIgnoreCase("shared")) {
-                                            itemEntity.setCollectionGroupId(02);
-                                        } else if (subField.getDescription().equalsIgnoreCase("private")) {
-                                            itemEntity.setCollectionGroupId(03);
-                                        }
-                                    }
-                                    if ((tag == 900) && (code.equalsIgnoreCase("b"))) {
-                                        itemEntity.setCustomerCode(subField.getDescription());
-                                    }
-                                }
-                            }
-                            itemEntities.add(itemEntity);
-                        }
-
-                    }
-                    holdingsEntity.setItemEntities(itemEntities);
-                }
-            }
-            bibliographicEntity.setHoldingsEntities(holdingsEntities);
-            bibliographicEntities.add(bibliographicEntity);
-        }
-
-        bibliographicEntityRepository.save(bibliographicEntities);
-        xsr.close();
+    public void checkSaveForInstitution() throws Exception{
+        institutionEntityRepository.deleteAll();
+        InstitutionEntity institutionEntity1 = new InstitutionEntity();
+        institutionEntity1.setInstitutionId(1);
+        institutionEntity1.setInstitutionCode("PUL");
+        institutionEntity1.setInstitutionName("PrincetonUniversityLibrary");
+        institutionEntityRepository.save(institutionEntity1);
+        InstitutionEntity institutionEntity2 = new InstitutionEntity();
+        institutionEntity2.setInstitutionId(2);
+        institutionEntity2.setInstitutionCode("CUL");
+        institutionEntity2.setInstitutionName("ColumbiaUniversityLibrary");
+        InstitutionEntity institutionEntity3 = new InstitutionEntity();
+        institutionEntityRepository.save(institutionEntity2);
+        institutionEntity3.setInstitutionId(3);
+        institutionEntity3.setInstitutionCode("NYPL");
+        institutionEntity3.setInstitutionName("NewYorkPublicLibrary");
+        institutionEntityRepository.save(institutionEntity3);
     }
+
+   
 
 
     @Test
@@ -202,139 +91,133 @@ public class PersistingFromXMLToDBTest {
        /* URL resource = getClass().getResource("/error.xml");
         System.out.println();
         assertNotNull(resource);*/
-        File file = new File("/home/likewise-open/HTCINDIA/harikrishnanv/Documents/50kPUL.xml");
-        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+        File file = new File("/home/likewise-open/HTCINDIA/harikrishnanv/Documents/testxml");
+        for (File files : file.listFiles()) {
+            System.out.println(files.getAbsolutePath());
 
-
+//        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
 //        File file = new File(resource.toURI());
-        JAXBContext jaxbContext = JAXBContext.newInstance(BibRecords.class);
-        assertNotNull(jaxbContext);
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        assertNotNull(jaxbContext);
-        BibRecords bibRecords = (BibRecords) unmarshaller.unmarshal(bis);
-        List<BibRecord> bibRecordList = bibRecords.getBibRecords();
+            JAXBContext jaxbContext = JAXBContext.newInstance(BibRecords.class);
+            assertNotNull(jaxbContext);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            assertNotNull(jaxbContext);
+            BibRecords bibRecords = (BibRecords) unmarshaller.unmarshal(files);
+            List<BibRecord> bibRecordList = bibRecords.getBibRecords();
 
-        //Additional Util Classes
-        Random random = new Random();
-
-
-        List<BibliographicEntity> bibliographicEntities = new ArrayList<>();
-        for (BibRecord bibRecord : bibRecordList) {
-
-            //For bibliographic_t
-
-            LocalDate localDateTime = LocalDate.now();
-            BibliographicEntity bibliographicEntity = new BibliographicEntity();
-            InstitutionEntity institutionEntity;
-            institutionEntity = institutionEntityRepository.findByInstitutionCode(bibRecord.getBib().getOwningInstitutionId().getDescription());
-            String owningInstitutionBibId = String.valueOf(random.nextInt());
-            bibliographicEntity.setOwningInstitutionBibId(owningInstitutionBibId);
-            bibliographicEntity.setBibliographicId(random.nextInt());
-            bibliographicEntity.setOwningInstitutionId(institutionEntity.getInstitutionId());
-            Marshaller marshaller = jaxbContext.createMarshaller();
-            OutputStream os = new ByteArrayOutputStream();
-            marshaller.marshal(bibRecord.getBib().getContent().getCollection(), os);
-            bibliographicEntity.setContent(os.toString());
-            bibliographicEntity.setLastUpdatedDate(localDateTime);
-            bibliographicEntity.setLastUpdatedBy("Admin");
-            bibliographicEntity.setCreatedDate(localDateTime);
-            bibliographicEntity.setCreatedBy("Admin");
+            //Additional Util Classes
+            Random random = new Random();
 
 
-            //for holdings
-            List<Holdings> holdingsList = bibRecord.getHoldings();
-            Set<HoldingsEntity> holdingsEntities = new HashSet<>();
-            for (Holdings holdings : holdingsList) {
-                List<Holding> holdingList = holdings.getHoldingList();
-                for (Holding holding : holdingList) {
-                    HoldingsEntity holdingsEntity = new HoldingsEntity();
-                    holdingsEntity.setOwningInstitutionHoldingsId(holding.getOwningInstitutionHoldingsId());
-                    OutputStream osForHoldingsContent = new ByteArrayOutputStream();
-                    marshaller.marshal(holding.getHoldingContent().getCollection(), osForHoldingsContent);
-                    holdingsEntity.setContent(osForHoldingsContent.toString());
-                    holdingsEntity.setHoldingsId(random.nextInt());
-                    holdingsEntity.setOwningInstitutionId(institutionEntity.getInstitutionId());
-                    holdingsEntity.setCreatedDate(localDateTime);
-                    holdingsEntity.setCreatedBy("admin");
-                    holdingsEntity.setLastUpdatedDate(localDateTime);
-                    holdingsEntity.setLastUpdatedBy("admin");
-                    holdingsEntities.add(holdingsEntity);
+            List<BibliographicEntity> bibliographicEntities = new ArrayList<>();
+            for (BibRecord bibRecord : bibRecordList) {
 
-                    //for items
-                    List<Items> itemsList = holding.getItemsList();
-                    Set<ItemEntity> itemEntities = new HashSet<>();
-                    for (Items items : itemsList) {
-                        List<Record> recordList = items.getContent().getCollection().getRecordList();
-                        for (Record record : recordList) {
-                            ItemEntity itemEntity = new ItemEntity();
-                            itemEntity.setOwningInstitutionId(institutionEntity.getInstitutionId());
-                            itemEntity.setOwningInstitutionItemId(String.valueOf(random.nextInt()));
-                            itemEntity.setCreatedDate(localDateTime);
-                            itemEntity.setCreatedBy("admin");
-                            itemEntity.setLastUpdatedDate(localDateTime);
-                            itemEntity.setLastUpdatedBy("admin");
-                            for (DataField dataField : record.getDatafield()) {
-                                Integer tag = dataField.getTag();
-                                for (SubField subField : dataField.getSubFieldList()) {
-                                    String code = subField.getCode();
-                                    if ((tag == 876) && (code.equalsIgnoreCase("a"))) {
-                                        itemEntity.setItemId(Integer.valueOf(subField.getDescription()));
-                                    }
-                                    if ((tag == 876) && (code.equalsIgnoreCase("h"))) {
-                                        itemEntity.setUseRestrictions(subField.getDescription());
-                                    }
-                                    if ((tag == 876) && (code.equalsIgnoreCase("j"))) {
-                                        if ((subField.getDescription().equalsIgnoreCase("Available"))) {
-                                            itemEntity.setItemAvailabilityStatusId(01);
-                                        } else  {
-                                            itemEntity.setItemAvailabilityStatusId(02);
+                //For bibliographic_t
+
+                LocalDate localDateTime = LocalDate.now();
+                BibliographicEntity bibliographicEntity = new BibliographicEntity();
+                InstitutionEntity institutionEntity;
+                institutionEntity = institutionEntityRepository.findByInstitutionCode(bibRecord.getBib().getOwningInstitutionId().getDescription());
+                String owningInstitutionBibId = String.valueOf(random.nextInt());
+                bibliographicEntity.setOwningInstitutionBibId(owningInstitutionBibId);
+                bibliographicEntity.setBibliographicId(random.nextInt());
+                bibliographicEntity.setOwningInstitutionId(institutionEntity.getInstitutionId());
+                Marshaller marshaller = jaxbContext.createMarshaller();
+                OutputStream os = new ByteArrayOutputStream();
+                marshaller.marshal(bibRecord.getBib().getContent().getCollection(), os);
+                bibliographicEntity.setContent(os.toString());
+                bibliographicEntity.setLastUpdatedDate(localDateTime);
+                bibliographicEntity.setLastUpdatedBy("Admin");
+                bibliographicEntity.setCreatedDate(localDateTime);
+                bibliographicEntity.setCreatedBy("Admin");
+
+
+                //for holdings
+                List<Holdings> holdingsList = bibRecord.getHoldings();
+                Set<HoldingsEntity> holdingsEntities = new HashSet<>();
+                for (Holdings holdings : holdingsList) {
+                    List<Holding> holdingList = holdings.getHoldingList();
+                    for (Holding holding : holdingList) {
+                        HoldingsEntity holdingsEntity = new HoldingsEntity();
+                        holdingsEntity.setOwningInstitutionHoldingsId(holding.getOwningInstitutionHoldingsId());
+                        OutputStream osForHoldingsContent = new ByteArrayOutputStream();
+                        marshaller.marshal(holding.getHoldingContent().getCollection(), osForHoldingsContent);
+                        holdingsEntity.setContent(osForHoldingsContent.toString());
+                        holdingsEntity.setHoldingsId(random.nextInt());
+                        holdingsEntity.setOwningInstitutionId(institutionEntity.getInstitutionId());
+                        holdingsEntity.setCreatedDate(localDateTime);
+                        holdingsEntity.setCreatedBy("admin");
+                        holdingsEntity.setLastUpdatedDate(localDateTime);
+                        holdingsEntity.setLastUpdatedBy("admin");
+                        holdingsEntities.add(holdingsEntity);
+
+                        //for items
+                        List<Items> itemsList = holding.getItemsList();
+                        Set<ItemEntity> itemEntities = new HashSet<>();
+                        for (Items items : itemsList) {
+                            List<Record> recordList = items.getContent().getCollection().getRecordList();
+                            for (Record record : recordList) {
+                                ItemEntity itemEntity = new ItemEntity();
+                                itemEntity.setOwningInstitutionId(institutionEntity.getInstitutionId());
+                                itemEntity.setOwningInstitutionItemId(String.valueOf(random.nextInt()));
+                                itemEntity.setCreatedDate(localDateTime);
+                                itemEntity.setCreatedBy("admin");
+                                itemEntity.setLastUpdatedDate(localDateTime);
+                                itemEntity.setLastUpdatedBy("admin");
+                                for (DataField dataField : record.getDatafield()) {
+                                    Integer tag = dataField.getTag();
+                                    for (SubField subField : dataField.getSubFieldList()) {
+                                        String code = subField.getCode();
+                                        if ((tag == 876) && (code.equalsIgnoreCase("a"))) {
+                                            itemEntity.setItemId(Integer.valueOf(subField.getDescription()));
                                         }
-                                    }
-                                    if ((tag == 876) && (code.equalsIgnoreCase("p"))) {
-                                        itemEntity.setBarcode(subField.getDescription());
-                                    }
-                                    if ((tag == 876) && (code.equalsIgnoreCase("t"))) {
-                                        itemEntity.setCopyNumber(Integer.valueOf(subField.getDescription()));
-                                    }
-                                    if ((tag == 876) && (code.equalsIgnoreCase("3"))) {
-                                        itemEntity.setVolumePartYear(subField.getDescription());
-                                    }
-                                    if ((tag == 900) && (code.equalsIgnoreCase("a"))) {
-                                        if (subField.getDescription().equalsIgnoreCase("open")) {
-                                            itemEntity.setCollectionGroupId(01);
-                                        } else if (subField.getDescription().equalsIgnoreCase("shared")) {
-                                            itemEntity.setCollectionGroupId(02);
-                                        } else if (subField.getDescription().equalsIgnoreCase("private")) {
-                                            itemEntity.setCollectionGroupId(03);
+                                        if ((tag == 876) && (code.equalsIgnoreCase("h"))) {
+                                            itemEntity.setUseRestrictions(subField.getDescription());
                                         }
-                                    }
-                                    if ((tag == 900) && (code.equalsIgnoreCase("b"))) {
-                                        itemEntity.setCustomerCode(subField.getDescription());
+                                        if ((tag == 876) && (code.equalsIgnoreCase("j"))) {
+                                            if ((subField.getDescription().equalsIgnoreCase("Available"))) {
+                                                itemEntity.setItemAvailabilityStatusId(01);
+                                            } else {
+                                                itemEntity.setItemAvailabilityStatusId(02);
+                                            }
+                                        }
+                                        if ((tag == 876) && (code.equalsIgnoreCase("p"))) {
+                                            itemEntity.setBarcode(subField.getDescription());
+                                        }
+                                        if ((tag == 876) && (code.equalsIgnoreCase("t"))) {
+                                            itemEntity.setCopyNumber(Integer.valueOf(subField.getDescription()));
+                                        }
+                                        if ((tag == 876) && (code.equalsIgnoreCase("3"))) {
+                                            itemEntity.setVolumePartYear(subField.getDescription());
+                                        }
+                                        if ((tag == 900) && (code.equalsIgnoreCase("a"))) {
+                                            if (subField.getDescription().equalsIgnoreCase("open")) {
+                                                itemEntity.setCollectionGroupId(01);
+                                            } else if (subField.getDescription().equalsIgnoreCase("shared")) {
+                                                itemEntity.setCollectionGroupId(02);
+                                            } else if (subField.getDescription().equalsIgnoreCase("private")) {
+                                                itemEntity.setCollectionGroupId(03);
+                                            }
+                                        }
+                                        if ((tag == 900) && (code.equalsIgnoreCase("b"))) {
+                                            itemEntity.setCustomerCode(subField.getDescription());
+                                        }
                                     }
                                 }
+                                itemEntities.add(itemEntity);
                             }
-                            itemEntities.add(itemEntity);
+
                         }
-
+                        holdingsEntity.setItemEntities(itemEntities);
                     }
-                    holdingsEntity.setItemEntities(itemEntities);
                 }
+                bibliographicEntity.setHoldingsEntities(holdingsEntities);
+                bibliographicEntities.add(bibliographicEntity);
             }
-            bibliographicEntity.setHoldingsEntities(holdingsEntities);
-            bibliographicEntities.add(bibliographicEntity);
+
+            bibliographicEntityRepository.save(bibliographicEntities);
+
+            System.out.println("Saved Records");
         }
-
-        bibliographicEntityRepository.save(bibliographicEntities);
-
-        System.out.println("Saved Records");
     }
 
-   /* @Test
-    public void checkSaveForInstitution() throws Exception{
-        InstitutionEntity institutionEntity = new InstitutionEntity();
-        institutionEntity.setInstitutionId(1);
-        institutionEntity.setInstitutionCode("PUL");
-        institutionEntity.setInstitutionName("PrincetonUniversityLibrary");
-        institutionEntityRepository.save(institutionEntity);
-    }*/
 }
